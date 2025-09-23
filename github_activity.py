@@ -20,7 +20,7 @@ def format_data(data: dict) -> str:
     if event_payload:
         return f'<{event_id}> {event_type} by {event_actor} on {event_payload} on repository {event_repo} at time {event_created_at}'
     elif event_payload == None or event_payload == '':
-        return f'<{event_id}> {event_type} by {event_actor} on {event_repo} at time {event_created_at}'
+        return f'<{event_id}> {event_type} by {event_actor} in {event_repo} at time {event_created_at}'
 
 def main():
     args = parser.parse_args()
@@ -37,7 +37,7 @@ def main():
         print(f'Error {e} while fetching data')
     
     except JSONDecodeError as e:
-        print(f'Error {e}, failed to decode jason')
+        print(f'Error {e}, failed to decode json')
 
 if __name__ == '__main__':
     main()
