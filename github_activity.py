@@ -1,18 +1,32 @@
 import urllib.request
 from urllib.error import URLError, HTTPError
 import json
-import sys
+import argparse
 
-url = "https://jsonplaceholder.typicode.com/posts/1" #This is the specific endpoint for the data we want
+parser = argparse.ArgumentParser(
+    description='Input your Github username to fetch your resent activity')
 
-print(f'Sending a GIT request to: {url}')
+parser.add_argument('username',help='Enter your Github username')
 
-try:
-    with urllib.request.urlopen(url) as response: #This sends the GET request
-        data_bytes = response.read() #With read the response comes in as raw bytes
-        data_string = data_bytes.decode('utf-8') #decode converts the bytes into utf-8 string
-        print(data_string)
-        post_data = json.loads(data_string) #Loads the json string into a python dictonary
-except HTTPError or URLError as e:
-    print('Error', e)
+stock_url = 'https://api.github.com/users/<username>/events'
+
+
+def main():
+    args = parser.parse_args()
+    username = args.username
+    url = stock_url.replace('<username>', username)
+    try:
+        with urllib.request.urlopen(url) as response:
+            response_string = response.read().decode('utf-8')
+            response_data = json.dumps(json.loads(response_string))
+            print(response_data)
+
+    except (URLError, HTTPError) as e:
+        print(f'Error{e} while fetching data')
+
+
+if __name__ == '__main__':
+    main()
+
+
 
