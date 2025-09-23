@@ -10,6 +10,9 @@ parser.add_argument('username',help='Enter your Github username')
 
 stock_url = 'https://api.github.com/users/<username>/events'
 
+def format_data(data: list):
+    print('Output:')
+
 
 def main():
     args = parser.parse_args()
@@ -20,6 +23,7 @@ def main():
             response_string = response.read().decode('utf-8')
             response_data = json.dumps(json.loads(response_string))
             print(response_data)
+            
 
     except (URLError, HTTPError) as e:
         print(f'Error{e} while fetching data')
