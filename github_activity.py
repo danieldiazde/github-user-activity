@@ -8,29 +8,31 @@ parser = argparse.ArgumentParser(
 
 parser.add_argument('username',help='Enter your Github username')
 
-stock_url = 'https://api.github.com/users/<username>/events'
+API_url = 'https://api.github.com/users/<username>/events'
 
-def format_data(data: list):
-    print('Output:')
+def format_data(data: dict): #Each dictionary is an event of actions on Github with "id, "type", "actor", "repo", "created_at", "payload"
+    event_id = data.get('id')
+    event_type = data.get('type')
+    event_actor = data.get('actor', {}).get('login')
+    event_repo = data.get('repo', {}).get('name')
+    event_created_at = data.get('created_at')
+    event_payload = data.get('ref_type') 
+    print(f'Event {event_type} on repository {event_repo} at time {event_created_at}')
 
 
 def main():
     args = parser.parse_args()
     username = args.username
-    url = stock_url.replace('<username>', username)
+    url = API_url.replace('<username>', username)
     try:
         with urllib.request.urlopen(url) as response:
             response_string = response.read().decode('utf-8')
-            response_data = json.dumps(json.loads(response_string))
-            print(response_data)
+            data = json.loads(response_string)
+            for event in data:
+                print('-', format_data(event))
             
-
     except (URLError, HTTPError) as e:
-        print(f'Error{e} while fetching data')
-
+        print(f'Error {e} while fetching data')
 
 if __name__ == '__main__':
     main()
-
-
-
